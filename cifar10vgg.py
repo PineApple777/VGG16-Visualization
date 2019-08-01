@@ -162,6 +162,9 @@ class cifar10vgg:
         def lr_scheduler(epoch):
             return learning_rate * (0.5 ** (epoch // lr_drop))
         reduce_lr = keras.callbacks.LearningRateScheduler(lr_scheduler)
+        
+        filepath = "D:\\extract\\perepoch\\cifar10-weights-epoch{epoch:02d}.hdf5"
+        weightPerEpoch = keras.callbacks.ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=True, mode='auto', period=1)
 
         #data augmentation
         datagen = ImageDataGenerator(
@@ -191,7 +194,8 @@ class cifar10vgg:
                                          batch_size=batch_size),
                             steps_per_epoch=x_train.shape[0] // batch_size,
                             epochs=maxepoches,
-                            validation_data=(x_test, y_test),callbacks=[reduce_lr],verbose=2)
+                            validation_data=(x_test, y_test),callbacks=[reduce_lr, weightPerEpoch],verbose=2)
+        print(historytemp.history)
         model.save_weights('cifar10vgg.h5')
         return model
 
