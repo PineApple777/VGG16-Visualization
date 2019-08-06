@@ -14,7 +14,7 @@ from keras import regularizers
 
 class cifar10vgg:
     def __init__(self,train=True):
-        self.num_classes = 10
+        self.num_classes = 1000 # 10 -> 1000
         self.weight_decay = 0.0005
         self.x_shape = [32,32,3]
 
@@ -31,86 +31,111 @@ class cifar10vgg:
         model = Sequential()
         weight_decay = self.weight_decay
 
+        # Convolution Layer 1
         model.add(Conv2D(64, (3, 3), padding='same',
-                         input_shape=self.x_shape,kernel_regularizer=regularizers.l2(weight_decay)))
+                         input_shape=self.x_shape, kernel_regularizer=regularizers.l2(weight_decay)))
         model.add(Activation('relu'))
         model.add(BatchNormalization())
-        model.add(Dropout(0.3))
+        #model.add(Dropout(0.5)) # 0.3 -> 0.5
 
-        model.add(Conv2D(64, (3, 3), padding='same',kernel_regularizer=regularizers.l2(weight_decay)))
+        # Convolution Layer 2
+        model.add(Conv2D(64, (3, 3), padding='same', kernel_regularizer=regularizers.l2(weight_decay)))
         model.add(Activation('relu'))
         model.add(BatchNormalization())
 
+        # Max pooling Layer 1
         model.add(MaxPooling2D(pool_size=(2, 2)))
 
-        model.add(Conv2D(128, (3, 3), padding='same',kernel_regularizer=regularizers.l2(weight_decay)))
+        # Convolution Layer 3
+        model.add(Conv2D(128, (3, 3), padding='same', kernel_regularizer=regularizers.l2(weight_decay)))
         model.add(Activation('relu'))
         model.add(BatchNormalization())
-        model.add(Dropout(0.4))
+        #model.add(Dropout(0.5)) # 0.4 -> 0.5
 
-        model.add(Conv2D(128, (3, 3), padding='same',kernel_regularizer=regularizers.l2(weight_decay)))
+        # Convolution Layer 4
+        model.add(Conv2D(128, (3, 3), padding='same', kernel_regularizer=regularizers.l2(weight_decay)))
         model.add(Activation('relu'))
         model.add(BatchNormalization())
 
+        # Max pooling Layer 2
         model.add(MaxPooling2D(pool_size=(2, 2)))
 
-        model.add(Conv2D(256, (3, 3), padding='same',kernel_regularizer=regularizers.l2(weight_decay)))
+        # Convolution Layer 5
+        model.add(Conv2D(256, (3, 3), padding='same', kernel_regularizer=regularizers.l2(weight_decay)))
         model.add(Activation('relu'))
         model.add(BatchNormalization())
-        model.add(Dropout(0.4))
+        #model.add(Dropout(0.4))
 
-        model.add(Conv2D(256, (3, 3), padding='same',kernel_regularizer=regularizers.l2(weight_decay)))
+        # Convolution Layer 6
+        model.add(Conv2D(256, (3, 3), padding='same', kernel_regularizer=regularizers.l2(weight_decay)))
         model.add(Activation('relu'))
         model.add(BatchNormalization())
-        model.add(Dropout(0.4))
+        #model.add(Dropout(0.4))
 
-        model.add(Conv2D(256, (3, 3), padding='same',kernel_regularizer=regularizers.l2(weight_decay)))
+        # Convolution Layer 7
+        model.add(Conv2D(256, (3, 3), padding='same', kernel_regularizer=regularizers.l2(weight_decay)))
         model.add(Activation('relu'))
         model.add(BatchNormalization())
 
+        # Max pooling Layer 3
         model.add(MaxPooling2D(pool_size=(2, 2)))
 
-
-        model.add(Conv2D(512, (3, 3), padding='same',kernel_regularizer=regularizers.l2(weight_decay)))
+        # Convolution Layer 8
+        model.add(Conv2D(512, (3, 3), padding='same', kernel_regularizer=regularizers.l2(weight_decay)))
         model.add(Activation('relu'))
         model.add(BatchNormalization())
-        model.add(Dropout(0.4))
+        #model.add(Dropout(0.4))
 
-        model.add(Conv2D(512, (3, 3), padding='same',kernel_regularizer=regularizers.l2(weight_decay)))
+        # Convolution Layer 9
+        model.add(Conv2D(512, (3, 3), padding='same', kernel_regularizer=regularizers.l2(weight_decay)))
         model.add(Activation('relu'))
         model.add(BatchNormalization())
-        model.add(Dropout(0.4))
+        #model.add(Dropout(0.4))
 
-        model.add(Conv2D(512, (3, 3), padding='same',kernel_regularizer=regularizers.l2(weight_decay)))
+        # Convolution Layer 10
+        model.add(Conv2D(512, (3, 3), padding='same', kernel_regularizer=regularizers.l2(weight_decay)))
         model.add(Activation('relu'))
         model.add(BatchNormalization())
 
+        # Max pooling Layer 4
         model.add(MaxPooling2D(pool_size=(2, 2)))
 
-
-        model.add(Conv2D(512, (3, 3), padding='same',kernel_regularizer=regularizers.l2(weight_decay)))
+        # Convolution Layer 11
+        model.add(Conv2D(512, (3, 3), padding='same', kernel_regularizer=regularizers.l2(weight_decay)))
         model.add(Activation('relu'))
         model.add(BatchNormalization())
-        model.add(Dropout(0.4))
+        #model.add(Dropout(0.4))
 
-        model.add(Conv2D(512, (3, 3), padding='same',kernel_regularizer=regularizers.l2(weight_decay)))
+        # Convolution Layer 12
+        model.add(Conv2D(512, (3, 3), padding='same', kernel_regularizer=regularizers.l2(weight_decay)))
         model.add(Activation('relu'))
         model.add(BatchNormalization())
-        model.add(Dropout(0.4))
+        #model.add(Dropout(0.4))
 
-        model.add(Conv2D(512, (3, 3), padding='same',kernel_regularizer=regularizers.l2(weight_decay)))
+        # Convolution Layer 13
+        model.add(Conv2D(512, (3, 3), padding='same', kernel_regularizer=regularizers.l2(weight_decay)))
         model.add(Activation('relu'))
         model.add(BatchNormalization())
 
+        # Max pooling Layer 5
         model.add(MaxPooling2D(pool_size=(2, 2)))
-        model.add(Dropout(0.5))
+        #model.add(Dropout(0.5))
 
+        # Fully Connect Layer 1
         model.add(Flatten())
-        model.add(Dense(512,kernel_regularizer=regularizers.l2(weight_decay)))
+        model.add(Dense(4096, kernel_regularizer=regularizers.l2(weight_decay)))
         model.add(Activation('relu'))
         model.add(BatchNormalization())
-
         model.add(Dropout(0.5))
+
+        # Fully Connect Layer 2
+        #model.add(Flatten())
+        model.add(Dense(4096, kernel_regularizer=regularizers.l2(weight_decay)))
+        model.add(Activation('relu'))
+        model.add(BatchNormalization())
+        model.add(Dropout(0.5))
+
+        # Fully Connect Layer 3
         model.add(Dense(self.num_classes))
         model.add(Activation('softmax'))
         return model
@@ -145,11 +170,11 @@ class cifar10vgg:
     def train(self,model):
 
         #training parameters
-        batch_size = 128
-        maxepoches = 250
-        learning_rate = 0.1
-        lr_decay = 1e-6
-        lr_drop = 20
+        batch_size = 256 # 128 -> 256
+        maxepoches = 250 # 74?
+        learning_rate = 0.01 # 0.1 -> 0.01
+        lr_decay = 5e-4 # 1e-6 -> 5e-4
+        lr_drop = 10 # 20 -> 10
         # The data, shuffled and split between train and test sets:
         (x_train, y_train), (x_test, y_test) = cifar10.load_data()
         x_train = x_train.astype('float32')
@@ -164,7 +189,10 @@ class cifar10vgg:
         reduce_lr = keras.callbacks.LearningRateScheduler(lr_scheduler)
         
         filepath = "D:\\extract\\perepoch\\cifar10-weights-epoch{epoch:02d}.hdf5"
-        weightPerEpoch = keras.callbacks.ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=True, mode='auto', period=1)
+        weightPerEpoch = keras.callbacks.ModelCheckpoint(filepath, monitor='val_loss', 
+                                                         verbose=0, save_best_only=False, 
+                                                         save_weights_only=True, 
+                                                         mode='auto', period=1)
 
         #data augmentation
         datagen = ImageDataGenerator(
@@ -183,9 +211,10 @@ class cifar10vgg:
 
 
 
-        #optimization details
+        # optimization details
+        # Must set Mini-batch Gradient Descent VGG16
         sgd = optimizers.SGD(lr=learning_rate, decay=lr_decay, momentum=0.9, nesterov=True)
-        model.compile(loss='categorical_crossentropy', optimizer=sgd,metrics=['accuracy'])
+        model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
 
         # training process in a for loop with learning rate drop every 25 epoches.
@@ -206,8 +235,8 @@ if __name__ == '__main__':
     x_train = x_train.astype('float32')
     x_test = x_test.astype('float32')
 
-    y_train = keras.utils.to_categorical(y_train, 10)
-    y_test = keras.utils.to_categorical(y_test, 10)
+    y_train = keras.utils.to_categorical(y_train, 1000)
+    y_test = keras.utils.to_categorical(y_test, 1000)
 
     model = cifar10vgg()
 
