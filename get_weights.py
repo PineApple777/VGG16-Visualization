@@ -78,7 +78,10 @@ def analyzingData(inputPath):
             visualization('float16', new_arr, dset)
     return
 
-def checkPerEpoch(startEpoch, endEpoch, perEpoch, filePath, layerName  ):
+def checkPerEpoch(startEpoch, endEpoch, perEpoch, filePath, layerName):
+    if(startEpoch <= perEpoch):
+        print("Cannot Access File, you must input perEpoch less than startEpoch\n")
+        return
     for num in range(startEpoch, endEpoch, perEpoch):
         inputPath1 = filePath + f"cifar10-weights-epoch{num-perEpoch:02d}.hdf5"
         inputPath2 = filePath + f"cifar10-weights-epoch{num:02d}.hdf5" 
@@ -86,7 +89,8 @@ def checkPerEpoch(startEpoch, endEpoch, perEpoch, filePath, layerName  ):
         f2 = h5py.File(inputPath2, 'r')
         arr1 = np.array(f1[layerName][:].tolist(), f1[layerName][:].dtype)
         arr2 = np.array(f2[layerName][:].tolist(), f2[layerName].dtype)
-        grd_arr = (arr2 - arr1)
+        grd_arr = arr2 - arr1
+        # regulat data
         reg_arr = (grd_arr - np.average(grd_arr)) / (np.max(grd_arr) - np.min(grd_arr))
         print(f"{layerName.split('/')[2]} gradient {num-perEpoch:02d}-{num:02d} \n")
         print(f"max : {np.max(grd_arr)}, min : {np.min(grd_arr)}, avg : {np.average(grd_arr)}, mean : {np.mean(grd_arr)} \n")
