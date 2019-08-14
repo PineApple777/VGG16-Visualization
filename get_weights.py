@@ -53,7 +53,7 @@ def extract_file_final(inputPath, outputFolder):
             text.write(str(arr.tolist()) + '\n')
             text.close()
 
-def analyzingData(inputPath):
+def analyzingData(inputPath, epochNum):
     with h5py.File(inputPath, 'r') as f:
         for dset in traverse_datasets(inputPath):
             print("===========================\n")
@@ -74,8 +74,10 @@ def analyzingData(inputPath):
             print("VarValue (분산) : " + str(layer_var) + "\n")
             print("stdValue (표준편차) : " + str(layer_std) + "\n")
             print("===========================\n")
-            new_arr = (arr_np - layer_avg) / (layer_max - layer_min)
-            visualization('float16', new_arr, dset)
+            #new_arr = (arr_np - layer_avg) / (layer_max - layer_min)
+            ids = dset.split('/')[3]
+            layer_name = f"cifar10-e{epochNum:02d}-{dset.split('/')[2]}_{ids.split(':')[0]}"
+            visualization('float16', arr_np, layer_name)
     return
 
 def checkPerEpoch(startEpoch, endEpoch, perEpoch, filePath, layerName):
@@ -89,25 +91,27 @@ def checkPerEpoch(startEpoch, endEpoch, perEpoch, filePath, layerName):
         f2 = h5py.File(inputPath2, 'r')
         arr1 = np.array(f1[layerName][:].tolist(), f1[layerName][:].dtype)
         arr2 = np.array(f2[layerName][:].tolist(), f2[layerName].dtype)
-        grd_arr = arr2 - arr1
+        grd_arr = np.abs(arr2 - arr1)
         # regulat data
-        reg_arr = (grd_arr - np.average(grd_arr)) / (np.max(grd_arr) - np.min(grd_arr))
+        #reg_arr = (grd_arr - np.average(grd_arr)) / (np.max(grd_arr) - np.min(grd_arr))
         print(f"{layerName.split('/')[2]} gradient {num-perEpoch:02d}-{num:02d} \n")
         print(f"max : {np.max(grd_arr)}, min : {np.min(grd_arr)}, avg : {np.average(grd_arr)}, mean : {np.mean(grd_arr)} \n")
-        visualization('float32', reg_arr, f"{layerName.split('/')[2]} gradient {num-perEpoch:02d}-{num:02d}")
+        visualization('float32', grd_arr, f"{layerName.split('/')[2]} gradient {num-perEpoch:02d}-{num:02d}")
         f2.close()
         f1.close()
 
 def visualization(float_type, reg_arr, title):
+    fig = plt.figure()
     plt.title(title)
     reg_arr.astype(float_type)
-    plt.hist(reg_arr.reshape(-1), bins=2**8, range=(-1, 1))
+    plt.hist(reg_arr.reshape(-1), bins=2**8)
     plt.show(block=False)
-    plt.pause(2)
+    plt.pause(1)
+    fig.savefig("D:\\extract\\analysis\\"+ title + ".png")
     plt.close()
 
 if __name__ == "__main__":
     #extract_file_perepoch(250, f"D:\\extract\\perepoch\\", f"D:\\extract\\perlayer\\")
     #extract_file_final("cifar10vgg.h5", f"D:\\extract\\perlayer\\final\\")
-    #analyzingData(f"D:\\extract\\perepoch\\cifar10-weights-epoch01.hdf5")
+    #analyzingData(f"D:\\extract\\perepoch\\cifar10-weights-epoch01.hdf5", 1)
     checkPerEpoch(11, 250, 10, f"D:\\extract\\perepoch\\", "/conv2d_4/conv2d_4/kernel:0" )
