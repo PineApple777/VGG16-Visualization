@@ -28,12 +28,13 @@ class AnalysisWithHdf5:
                     text.write(str(arr.tolist()) + '\n')
                     text.close()
 
-    def extractOneEpoch(self, outputFolder, fileName):
+    def extractOneEpoch(self, fileName, outputFolder):
+        inputFile = self.inputPath + fileName
         self.tools.checkAndMakeDir(outputFolder)
-        with h5py.File(self.inputPath, 'r') as f:
-            for dset in self.tools.traverse_datasets(self.inputPath):
+        with h5py.File(inputFile, 'r') as f:
+            for dset in self.tools.traverse_datasets(inputFile):
                 ids = dset.split('/')[3]
-                textfile = outputFolder + f"cifar10-{fileName}-{dset.split('/')[2]}_{ids.split(':')[0]}.txt"
+                textfile = outputFolder + f"cifar10-{dset.split('/')[2]}_{ids.split(':')[0]}.txt"
                 print(textfile)
                 text = open(textfile, 'w')
                 text.write('Path:' + str(dset) + '\n')
@@ -125,10 +126,11 @@ class AnalysisWithHdf5:
         fig.savefig("gradientAveragePerEpoch.png")
         plt.close()
 
-    def checkConvergenceRate(self, outputPath):
+    def checkConvergenceRate(self, inputFile, outputPath):
         convergencePoint = 2 ** (-12)
+        inputP = self.inputPath + inputFile
         value = [x for x in range(1, self.maxEpoch)]
-        layers = self.tools.getLayerNameList("cifar10vgg.h5")
+        layers = self.tools.getLayerNameList(inputP)
         self.tools.checkAndMakeDir(outputPath)
         for layerName in layers:
             convRate_arr = []
@@ -165,11 +167,13 @@ class AnalysisWithHdf5:
 
 if __name__ == "__main__":
     myAnalysis = AnalysisWithHdf5(250, f"D:\\extract\\perepoch\\")
-    myAnalysis.extract_file_perepoch(f"D:\\extract\\perlayer\\")
-    #myAnalysis.extractOneEpoch(f"D:\\extract\\perlayer\\final\\", "final")
+    #myAnalysis.extract_file_perepoch(f"D:\\extract\\perlayer\\")
+    #myAnalysis.extractOneEpoch(f"cifar10-weights-epoch01.hdf5", f"D:\\extract\\perlayer\\oneEpoch\\")
     #myAnalysis.analyzingData(f"cifar10-weights-epoch01.hdf5", "epoch01")
     #myAnalysis.analyzingData(f"cifar10-weights-epoch250.hdf5", "epoch250")
     #myAnalysis.HeatmapData(f"cifar10-weights-epoch01.hdf5","/conv2d_4/conv2d_4/kernel:0")
     #myAnalysis.checkPerEpoch(11, 10, "/conv2d_4/conv2d_4/kernel:0")
     #myAnalysis.totalAverageGradient("/conv2d_4/conv2d_4/kernel:0")
-    #myAnalysis.checkConvergenceRate(f"D:\\extract\\convergence\\")
+    myAnalysis.checkConvergenceRate(f"cifar10-weights-epoch250.hdf5", f"D:\\extract\\convergence\\")
+
+    
