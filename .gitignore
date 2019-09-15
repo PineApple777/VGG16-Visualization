@@ -105,4 +105,5 @@ ENV/
 
 # etc
 .png
-.h5
+Deep_learning/cifar10vgg.h5
+Deep_learning/cifar100vgg.h5
