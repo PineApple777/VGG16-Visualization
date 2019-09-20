@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 class utilities:
     def __init__(self):
         self.name = "utilties"
+        self.hostDir = "H://extract//"
 
     def checkAndMakeDir(self, directoryPath):
         if not(os.path.isdir(directoryPath)):
@@ -39,7 +40,7 @@ class utilities:
         plt.ylabel("Counts")
         plt.show(block=False)
         plt.pause(1)
-        path = f"D:\\extract\\analysis\\" + outFolder
+        path = self.hostDir + f"analysis\\" + outFolder
         self.checkAndMakeDir(path)
         fig.savefig(path + title + ".png")
         plt.close()
@@ -51,7 +52,7 @@ class utilities:
         plt.imshow(reg_arr, cmap='hot', interpolation='nearest')
         plt.show(block=False)
         plt.pause(1)
-        path = f"D:\\extract\\heatmap\\"
+        path = self.hostDir + f"heatmap\\"
         self.checkAndMakeDir(path)
         fig.savefig(path + title + ".png")
         plt.close()

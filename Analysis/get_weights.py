@@ -71,7 +71,7 @@ class AnalysisWithHdf5:
                 layer_name = f"cifar10-{epochName}-{dset.split('/')[2]}_{ids.split(':')[0]}"
                 self.tools.visualization('float16', arr_np, layer_name, epochName + "//")
         return
-"""
+
     def HeatmapData(self, fileName):
         filePath = self.inputPath + fileName
         layers = self.tools.getLayerNameList(filePath)
@@ -85,16 +85,18 @@ class AnalysisWithHdf5:
             width = f1[layers[x]].shape[3]
             h_filter = f1[layers[x]].shape[0]
             w_filter = f1[layers[x]].shape[1]
+            arr = np.arange(h_filter *height *w_filter *width).reshape((h_filter *height, w_filter *width)).astype('float32')
             for i in range(h_filter):
                 for j in range(w_filter):
-                    arr = np.arange(h_filter, w_filter).reshape((h_filter, w_filter)).astype('float32')
-                    arr[i][j] = 
+                    for a in range(height):
+                        for b in range(width):
+                            arr[height *i + a][width *j + b] = arr1[i][j][a][b] 
             print("Layer Name : " + layers[x])
             layerName = layers[x].split(":")[0].split("/")[1]
             layerIdf = layers[x].split(":")[0].split("/")[3]
             self.tools.visualHeatmap('float32', arr, layerName + "-" + layerIdf )
             f1.close()
-"""
+
 
     def checkPerEpoch(self, startEpoch, perEpoch, layerName):
         if(startEpoch <= perEpoch):
@@ -179,15 +181,16 @@ class AnalysisWithHdf5:
             plt.close()
 
 
+# Example of Running VGG16 Visualization
 if __name__ == "__main__":
-    myAnalysis = AnalysisWithHdf5(250, f"D:\\extract\\perepoch\\")
-    #myAnalysis.extract_file_perepoch(f"D:\\extract\\perlayer\\")
-    #myAnalysis.extractOneEpoch(f"cifar10-weights-epoch01.hdf5", f"D:\\extract\\perlayer\\oneEpoch\\")
+    myAnalysis = AnalysisWithHdf5(250, f"H:\\extract\\perepoch\\")
+    #myAnalysis.extract_file_perepoch(f"H:\\extract\\perlayer\\")
+    #myAnalysis.extractOneEpoch(f"cifar10-weights-epoch01.hdf5", f"H:\\extract\\perlayer\\oneEpoch\\")
     #myAnalysis.analyzingData(f"cifar10-weights-epoch01.hdf5", "epoch01")
     #myAnalysis.analyzingData(f"cifar10-weights-epoch250.hdf5", "epoch250")
-    #myAnalysis.HeatmapData(f"cifar10-weights-epoch250.hdf5")
+    myAnalysis.HeatmapData(f"cifar10-weights-epoch250.hdf5")
     #myAnalysis.checkPerEpoch(11, 10, "/conv2d_4/conv2d_4/kernel:0")
     #myAnalysis.totalAverageGradient("/conv2d_4/conv2d_4/kernel:0")
-    #myAnalysis.checkConvergenceRate(f"cifar10-weights-epoch250.hdf5", f"D:\\extract\\convergence\\")
+    #myAnalysis.checkConvergenceRate(f"cifar10-weights-epoch250.hdf5", f"H:\\extract\\convergence\\")
 
     
