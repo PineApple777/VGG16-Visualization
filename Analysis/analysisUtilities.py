@@ -50,7 +50,7 @@ class utilities:
         reg_arr.astype(float_type)
         plt.imshow(reg_arr, cmap='hot', interpolation='nearest')
         plt.show(block=False)
-        plt.pause(2)
+        plt.pause(1)
         path = f"D:\\extract\\heatmap\\"
         self.checkAndMakeDir(path)
         fig.savefig(path + title + ".png")

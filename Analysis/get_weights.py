@@ -71,16 +71,30 @@ class AnalysisWithHdf5:
                 layer_name = f"cifar10-{epochName}-{dset.split('/')[2]}_{ids.split(':')[0]}"
                 self.tools.visualization('float16', arr_np, layer_name, epochName + "//")
         return
-
-    def HeatmapData(self, inputFile, layerName):
-        filePath = self.inputPath + inputFile
-        for num in range(1, self.maxEpoch):
+"""
+    def HeatmapData(self, fileName):
+        filePath = self.inputPath + fileName
+        layers = self.tools.getLayerNameList(filePath)
+        print("Layer Counts : " + str(len(layers)))
+        for x in range(len(layers)):
             f1 = h5py.File(filePath, 'r')
-            arr1 = np.array(f1[layerName][:].tolist(), f1[layerName][:].dtype)
-            ids = layerName.split('/')[3]
-            layer_name = f"cifar10-e{num:02d}-{layerName.split('/')[2]}_{ids.split(':')[0]}"
-            self.tools.visualHeatmap('float16', arr1, layer_name)
+            if(len(f1[layers[x]].shape) != 4 ):
+                continue
+            arr1 = np.array(f1[layers[x]][:].tolist(),'float32')
+            height = f1[layers[x]].shape[2]
+            width = f1[layers[x]].shape[3]
+            h_filter = f1[layers[x]].shape[0]
+            w_filter = f1[layers[x]].shape[1]
+            for i in range(h_filter):
+                for j in range(w_filter):
+                    arr = np.arange(h_filter, w_filter).reshape((h_filter, w_filter)).astype('float32')
+                    arr[i][j] = 
+            print("Layer Name : " + layers[x])
+            layerName = layers[x].split(":")[0].split("/")[1]
+            layerIdf = layers[x].split(":")[0].split("/")[3]
+            self.tools.visualHeatmap('float32', arr, layerName + "-" + layerIdf )
             f1.close()
+"""
 
     def checkPerEpoch(self, startEpoch, perEpoch, layerName):
         if(startEpoch <= perEpoch):
@@ -171,9 +185,9 @@ if __name__ == "__main__":
     #myAnalysis.extractOneEpoch(f"cifar10-weights-epoch01.hdf5", f"D:\\extract\\perlayer\\oneEpoch\\")
     #myAnalysis.analyzingData(f"cifar10-weights-epoch01.hdf5", "epoch01")
     #myAnalysis.analyzingData(f"cifar10-weights-epoch250.hdf5", "epoch250")
-    #myAnalysis.HeatmapData(f"cifar10-weights-epoch01.hdf5","/conv2d_4/conv2d_4/kernel:0")
+    #myAnalysis.HeatmapData(f"cifar10-weights-epoch250.hdf5")
     #myAnalysis.checkPerEpoch(11, 10, "/conv2d_4/conv2d_4/kernel:0")
     #myAnalysis.totalAverageGradient("/conv2d_4/conv2d_4/kernel:0")
-    myAnalysis.checkConvergenceRate(f"cifar10-weights-epoch250.hdf5", f"D:\\extract\\convergence\\")
+    #myAnalysis.checkConvergenceRate(f"cifar10-weights-epoch250.hdf5", f"D:\\extract\\convergence\\")
 
     
